@@ -885,8 +885,39 @@ static void ProcessSplashes()
     pending.clear();
 }
 
+// RTX Remix compatibility mod (xoxor4d's gta4-rtx): the frame is path traced and
+// only put on the back buffer right before the HUD, over anything drawn before,
+// so the drops of the plugin never show. Under it the drops are the RemixFX port
+// of this effect instead (source/remixfx/lens_drops), which the mod feeds what
+// the game asks for: it hooks the same camera effect requests as the plugin, and
+// the plugin stays out of its way.
+extern "C" BOOL WINAPI K32EnumProcessModules(HANDLE hProcess, HMODULE* lphModule, DWORD cb, LPDWORD lpcbNeeded); // kernel32, Windows 7+
+
+static bool IsGta4RtxLoaded()
+{
+    HMODULE modules[1024];
+    DWORD needed = 0;
+    if (!K32EnumProcessModules(GetCurrentProcess(), modules, sizeof(modules), &needed))
+        return false;
+
+    for (DWORD i = 0; i < std::min<DWORD>(needed / sizeof(HMODULE), 1024); i++)
+    {
+        wchar_t path[MAX_PATH]{};
+        if (!GetModuleFileNameW(modules[i], path, MAX_PATH))
+            continue;
+        auto name = std::filesystem::path(path).filename().wstring();
+        std::transform(name.begin(), name.end(), name.begin(), ::towlower);
+        if (name.find(L"gta4-rtx") != std::wstring::npos)
+            return true;
+    }
+    return false;
+}
+
 void Init()
 {
+    if (IsGta4RtxLoaded())
+        return;
+
     WaterDrops::ReadSettings(true);
 
     RegisterFountains();

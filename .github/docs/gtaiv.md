@@ -16,6 +16,10 @@
 
 Used Xbox Rain Droplets before? Delete the old `GTAIV.XboxRainDroplets.asi`: while it is there, the game shows a message and closes.
 
+## RTX Remix
+
+With xoxor4d's [RTX Remix compatibility mod](https://github.com/xoxor4d/gta4-rtx) the plugin's drops can't show, because the path traced frame is put on the screen over them. The drops come from the RemixFX port of the effect instead: copy [`source/remixfx/lens_drops`](../../source/remixfx/lens_drops) into `remix-shaders` next to `GTAIV.exe`, and see its [readme](../../source/remixfx/lens_drops/README.md) for what it needs. The plugin stays out of the way while the mod is loaded.
+
 ## Notes
 
 - Works with the Complete Edition, and with the episodes the plugin is installed for (`EFLC.exe`).
