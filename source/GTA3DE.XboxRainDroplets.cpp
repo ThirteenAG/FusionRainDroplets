@@ -402,9 +402,14 @@ static void PresentHandler(IDXGISwapChain* pSwapChain)
 
         // The drops of this API are recorded into the list of the frame itself, in the
         // middle of it, see DrawDropletsInListD3D12. What was drawn there leaves
-        // nothing for this to do.
+        // nothing for this to do. The frame is marked first: the draw and the
+        // submission of the effect go through the frame hooks as well, and must not
+        // start a second draw of the drops from inside this one.
         if (!gbDropsDrawnThisFrame)
+        {
+            gbDropsDrawnThisFrame = true;
             DrawDroplets();
+        }
     }
     else
     {
@@ -412,9 +417,13 @@ static void PresentHandler(IDXGISwapChain* pSwapChain)
 
         // The frame of this renderer is drawn under its UI, in the middle of the
         // commands of the frame, see DrawDropletsUnderUiD3D11. This is only what is left
-        // for the frames that never reached such a draw, which the menus are.
+        // for the frames that never reached such a draw: the menus, and the scripted
+        // cameras, which hide the HUD. Marked first for the same reason as above.
         if (!gbDropsDrawnThisFrame)
+        {
+            gbDropsDrawnThisFrame = true;
             DrawDroplets();
+        }
     }
 
     // The frame is over: what is drawn from here on belongs to the next one, and what
