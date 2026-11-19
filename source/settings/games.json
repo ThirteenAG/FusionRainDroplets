@@ -66,6 +66,7 @@
   },
   "SplinterCellDoubleAgent.XboxRainDroplets": {
     "games": [ { "name": "Splinter Cell: Double Agent", "exe": [ "SCDA-Offline/System/SplinterCell4.exe" ] } ],
+    "exclude": [ "BONUS.EnableSnow" ],
     "defaults": { "MAIN.SpeedAdjuster": 0.05 }
   },
   "SplinterCellBlacklist.XboxRainDroplets": {
